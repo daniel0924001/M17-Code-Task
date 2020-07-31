@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">M17 Code Task</string>
+    <string name="get_info">GET INFO</string>
+    <string name="edit_text_hint">Type the user name you want to search</string>
 </resources>
