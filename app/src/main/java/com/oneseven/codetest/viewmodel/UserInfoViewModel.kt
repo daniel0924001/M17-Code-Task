@@ -1,9 +1,15 @@
 package com.oneseven.codetest.viewmodel
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.oneseven.codetest.model.UserInfo
+import com.oneseven.codetest.model.UserList
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import java.util.function.Function
 
 class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
 
@@ -28,8 +34,20 @@ class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
         return userInfos
     }
 
+    @SuppressLint("CheckResult")
     fun loadMoreUserInfos(input : String) {
+
         infoRepository.loadUserInfo(input, taskFinished)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                if(it.items != null) {
+                    userInfos.value?.addAll(it.items.asIterable())
+                }
+                userInfos.value = userInfos.value
+            }, {
+                Log.e("UserInfoViewModel", it.toString())
+            })
     }
 
 }
