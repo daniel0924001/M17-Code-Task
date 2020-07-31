@@ -16,9 +16,9 @@ class UserInfoRepository {
 
     var pageNumber = 1
 
-    fun loadUserInfo(@NonNull task: OnTaskFinished) {
+    fun loadUserInfo(input: String, @NonNull task: OnTaskFinished) {
         val apiService = AppClientManager.client.create(ApiService::class.java)
-        apiService.getUserInfos("Daniel", pageNumber).enqueue(object : Callback<UserList> {
+        apiService.getUserInfos(input, pageNumber).enqueue(object : Callback<UserList> {
             override fun onResponse(call: Call<UserList>, response: Response<UserList>) {
                 response.body()?.items?.forEach {
                     Log.i("UserInfoRepository", "name: ${it.login}, page: $pageNumber")
@@ -32,30 +32,8 @@ class UserInfoRepository {
             }
         })
     }
-
-    fun loadUserInfoMock(@NonNull task: OnTaskFinished) {
-        Executors.newSingleThreadExecutor().submit {
-            val data = ArrayList<UserInfo>()
-
-            Log.d("UserInfoRepository", "start")
-
-            for (i in 1..10) {
-                val userInfo = UserInfo()
-                userInfo.login = "Daniel$i"
-                userInfo.avatar_url = "https://static.zooniverse.org/www.zooniverse.org/assets/simple-avatar.png"
-                userInfo.url = "https://api.github.com/users/Daniel15"
-                data.add(userInfo)
-            }
-
-            Log.d("UserInfoRepository", "sleep start")
-            sleep(3000);
-
-            Log.d("UserInfoRepository", "task finished")
-            task.onFinished(data)
-        }
-    }
 }
 
 interface OnTaskFinished {
-    fun onFinished(data : List<UserInfo>?);
+    fun onFinished(data : List<UserInfo>?)
 }

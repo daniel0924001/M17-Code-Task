@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="item_bid_avatar_size">128dp</dimen>
+    <dimen name="item_big_border">32dp</dimen>
+    <dimen name="item_small_avatar_size">64dp</dimen>
+    <dimen name="item_small_border">16dp</dimen>
+</resources>

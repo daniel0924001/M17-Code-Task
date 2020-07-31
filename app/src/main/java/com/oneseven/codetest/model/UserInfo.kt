@@ -11,4 +11,6 @@ class UserInfo {
     @SerializedName("url")
     var url: String? = null
 
+    var itemType: Int = -1
+
 }

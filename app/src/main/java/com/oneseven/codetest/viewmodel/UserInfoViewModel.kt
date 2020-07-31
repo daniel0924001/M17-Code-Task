@@ -25,11 +25,11 @@ class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
     }
 
     fun getUserInfos() : LiveData<MutableList<UserInfo>> {
-        return userInfos;
+        return userInfos
     }
 
-    fun loadMoreUserInfos() {
-        infoRepository.loadUserInfo(taskFinished);
+    fun loadMoreUserInfos(input : String) {
+        infoRepository.loadUserInfo(input, taskFinished)
     }
 
 }
