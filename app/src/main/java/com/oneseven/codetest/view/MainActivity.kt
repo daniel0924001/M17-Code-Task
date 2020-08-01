@@ -1,8 +1,12 @@
 package com.oneseven.codetest.view
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -39,9 +43,15 @@ class MainActivity : AppCompatActivity() {
         initRecyclerView();
 
         infoViewModel.getUserInfos().observe(this, Observer {
-            Toast.makeText(this, "load completed! size = ${it.size}", Toast.LENGTH_SHORT).show()
+            Log.i("MainActivity", "User Data updated with size = $it.size()")
             activityMainBinding.loading = false
             userListAdapter.notifyDataSetChanged()
+        })
+
+        infoViewModel.getRecentThrowable().observe(this, Observer {
+            Log.e("MainActivity", "Exception: ${it.toString()}")
+            activityMainBinding.loading = false
+            Toast.makeText(this, "Exception: ${it.toString()}", Toast.LENGTH_LONG).show()
         })
 
     }
@@ -57,5 +67,19 @@ class MainActivity : AppCompatActivity() {
     fun onInitUserInfosBtn(view : View) {
         activityMainBinding.loading = true;
         infoViewModel.loadMoreUserInfos(activityMainBinding.inputName.text.toString())
+        userListAdapter.clear()
+
+        hideKeyboard()
+    }
+
+    fun AppCompatActivity.hideKeyboard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
     }
 }
+
+

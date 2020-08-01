@@ -14,6 +14,7 @@ import java.util.function.Function
 class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
 
     val userInfos : MutableLiveData<MutableList<UserInfo>> = MutableLiveData()
+    val recentThrowable: MutableLiveData<Throwable> = MutableLiveData()
 
     init {
         userInfos.value = ArrayList()
@@ -34,6 +35,10 @@ class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
         return userInfos
     }
 
+    fun getRecentThrowable() : LiveData<Throwable> {
+        return recentThrowable
+    }
+
     @SuppressLint("CheckResult")
     fun loadMoreUserInfos(input : String) {
 
@@ -47,6 +52,7 @@ class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
                 userInfos.value = userInfos.value
             }, {
                 Log.e("UserInfoViewModel", it.toString())
+                recentThrowable.value = it
             })
     }
 

@@ -8,7 +8,6 @@ import com.oneseven.codetest.R
 
 @BindingAdapter("android:imageUrl")
 fun ImageView.setImageUrl(url: String?) {
-    Log.d("ImageViewAttrAdapter", "url: $url")
     Glide.with(context)
         .load(url)
         .placeholder(R.drawable.account_circle)

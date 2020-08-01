@@ -34,4 +34,8 @@ class UserListAdapter(private val data : MutableList<UserInfo>) : RecyclerView.A
         }
         return this.data.get(position).itemType
     }
+
+    fun clear() {
+        data.clear()
+    }
 }
