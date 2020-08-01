@@ -18,22 +18,9 @@ class UserInfoRepository {
 
     var pageNumber = 0
 
-    fun loadUserInfo(input: String, @NonNull task: OnTaskFinished): Single<UserList> {
+    fun loadUserInfo(input: String): Single<UserList> {
         pageNumber++
         return apiService.getUserInfos(input, pageNumber)
-//        apiService.getUserInfos(input, pageNumber).enqueue(object : Callback<UserList> {
-//            override fun onResponse(call: Call<UserList>, response: Response<UserList>) {
-//                response.body()?.items?.forEach {
-//                    Log.i("UserInfoRepository", "name: ${it.login}, page: $pageNumber")
-//                }
-//
-//                task.onFinished(response.body()?.items)
-//            }
-//
-//            override fun onFailure(call: Call<UserList>, t: Throwable) {
-//                Log.e("UserInfoRepository", "onFailure ${t.toString()}")
-//            }
-//        })
     }
 }
 

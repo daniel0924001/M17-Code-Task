@@ -10,6 +10,8 @@ import com.oneseven.codetest.model.UserInfo
 
 class UserListAdapter(private val data : MutableList<UserInfo>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var previousSize: Int = 0
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val viewHolder = when(viewType) {
             0 -> ItemViewHolder(DataBindingUtil.inflate(
@@ -37,5 +39,11 @@ class UserListAdapter(private val data : MutableList<UserInfo>) : RecyclerView.A
 
     fun clear() {
         data.clear()
+    }
+
+    fun updateList() {
+        val increase : Int = itemCount - previousSize
+        notifyItemRangeInserted(previousSize, increase)
+        previousSize = itemCount
     }
 }

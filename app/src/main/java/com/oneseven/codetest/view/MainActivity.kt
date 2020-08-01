@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         infoViewModel.getUserInfos().observe(this, Observer {
             Log.i("MainActivity", "User Data updated with size = $it.size()")
             loading.value = false
-            userListAdapter.notifyDataSetChanged()
+            userListAdapter.updateList()
         })
 
         infoViewModel.getRecentThrowable().observe(this, Observer {

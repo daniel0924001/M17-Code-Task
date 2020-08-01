@@ -22,17 +22,6 @@ class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
         loading.value = false
     }
 
-    val taskFinished = object : OnTaskFinished {
-
-        override fun onFinished(data: List<UserInfo>?) {
-            if(data != null) {
-                userInfos.value?.addAll(data)
-            }
-            userInfos.postValue(userInfos.value)
-        }
-
-    }
-
     fun getUserInfos() : LiveData<MutableList<UserInfo>> {
         return userInfos
     }
@@ -48,7 +37,7 @@ class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
     @SuppressLint("CheckResult")
     fun loadMoreUserInfos(input : String) {
 
-        infoRepository.loadUserInfo(input, taskFinished)
+        infoRepository.loadUserInfo(input)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
