@@ -5,17 +5,17 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.oneseven.codetest.model.UserDetail
 import com.oneseven.codetest.model.UserInfo
-import com.oneseven.codetest.model.UserList
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.function.Function
 
 class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
 
     val userInfos : MutableLiveData<MutableList<UserInfo>> = MutableLiveData()
     val recentThrowable: MutableLiveData<Throwable> = MutableLiveData()
     val loading: MutableLiveData<Boolean> = MutableLiveData()
+    val userDetail : MutableLiveData<UserDetail> = MutableLiveData()
 
     init {
         userInfos.value = ArrayList()
@@ -34,6 +34,10 @@ class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
         return loading
     }
 
+    fun getUserDetail() : LiveData<UserDetail> {
+        return userDetail
+    }
+
     @SuppressLint("CheckResult")
     fun loadMoreUserInfos(input : String) {
 
@@ -46,6 +50,24 @@ class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
                 }
                 userInfos.value = userInfos.value
             }, {
+                Log.e("UserInfoViewModel", it.toString())
+                recentThrowable.value = it
+            })
+    }
+
+    @SuppressLint("CheckResult")
+    fun loadUserDetail(userName : String?) {
+
+        if(userName == null) {
+            return
+        }
+
+        infoRepository.loadUserDetail(userName)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                userDetail.value = it
+            },{
                 Log.e("UserInfoViewModel", it.toString())
                 recentThrowable.value = it
             })

@@ -63,13 +63,22 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Exception: $it", Toast.LENGTH_LONG).show()
         })
 
+        infoViewModel.getUserDetail().observe(this, Observer {
+            Toast.makeText(this, "User Detail:\nName: ${it.name}\nBio: ${it.bio}", Toast.LENGTH_LONG).show()
+        })
+
     }
 
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = RecyclerView.VERTICAL
         activityMainBinding.searchResult.layoutManager = layoutManager
-        userListAdapter = UserListAdapter(infoViewModel.getUserInfos().value!!)
+        userListAdapter = UserListAdapter(infoViewModel.getUserInfos().value!!).apply {
+            itemClick = { userName ->
+                Log.e("MainActivity", "open user name: $userName")
+                infoViewModel.loadUserDetail(userName)
+            }
+        }
         activityMainBinding.searchResult.adapter = userListAdapter
 
         scrollListener = RecyclerViewLoadMoreScroll(layoutManager, loading)

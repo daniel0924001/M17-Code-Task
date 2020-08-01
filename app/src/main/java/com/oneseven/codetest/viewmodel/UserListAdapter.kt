@@ -12,6 +12,8 @@ class UserListAdapter(private val data : MutableList<UserInfo>) : RecyclerView.A
 
     private var previousSize: Int = 0
 
+    var itemClick: ((String?) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val viewHolder = when(viewType) {
             0 -> ItemViewHolder(DataBindingUtil.inflate(
@@ -24,6 +26,9 @@ class UserListAdapter(private val data : MutableList<UserInfo>) : RecyclerView.A
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as ItemViewHolder).dataBinding.setVariable(BR.userInfo, this.data.get(position))
+        holder.itemView.setOnClickListener {
+            itemClick?.invoke(this.data.get(position).login)
+        }
     }
 
     override fun getItemCount(): Int {
