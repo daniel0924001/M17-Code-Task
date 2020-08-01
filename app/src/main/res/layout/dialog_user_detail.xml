@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable name="userDetail" type="com.oneseven.codetest.model.UserDetail"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/item_bid_avatar_size"
+            android:layout_height="@dimen/item_bid_avatar_size"
+            android:layout_marginTop="@dimen/item_big_border"
+            android:layout_marginStart="@dimen/item_big_border"
+            android:layout_marginEnd="@dimen/item_big_border"
+            android:contentDescription="@string/avatar_description"
+            android:imageUrl="@{userDetail.avatar_url}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/close"
+            android:padding="@dimen/item_small_border"
+            android:src="@drawable/close"
+            android:onClick="onDialogDismissBtn"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_big_border"
+            android:text="@{userDetail.name}"
+            app:layout_constraintTop_toBottomOf="@id/avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/bio"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_big_border"
+            android:layout_marginStart="@dimen/item_big_border"
+            android:layout_marginEnd="@dimen/item_big_border"
+            android:paddingBottom="@dimen/item_big_border"
+            android:text="@{userDetail.bio}"
+            app:layout_constraintTop_toBottomOf="@id/name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

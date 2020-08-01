@@ -1,9 +1,11 @@
 package com.oneseven.codetest.view
 
+import android.app.Dialog
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.oneseven.codetest.R
 import com.oneseven.codetest.databinding.ActivityMainBinding
+import com.oneseven.codetest.databinding.DialogUserDetailBinding
 import com.oneseven.codetest.viewmodel.UserInfoFactory
 import com.oneseven.codetest.viewmodel.UserInfoRepository
 import com.oneseven.codetest.viewmodel.UserInfoViewModel
@@ -24,6 +27,7 @@ import com.oneseven.codetest.viewmodel.UserListAdapter
 class MainActivity : AppCompatActivity() {
 
     private lateinit var activityMainBinding : ActivityMainBinding
+    private lateinit var dialogUserDetailBinding : DialogUserDetailBinding
 
     private lateinit var infoViewModel: UserInfoViewModel
     private lateinit var infoFactory: UserInfoFactory
@@ -33,6 +37,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var scrollListener: RecyclerViewLoadMoreScroll
 
     private lateinit var loading: MutableLiveData<Boolean>
+
+    private lateinit var dialog : Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +55,8 @@ class MainActivity : AppCompatActivity() {
             activityMainBinding.loading = it
         })
 
-        initRecyclerView();
+        initRecyclerView()
+        initDialog()
 
         infoViewModel.getUserInfos().observe(this, Observer {
             Log.i("MainActivity", "User Data updated with size = $it.size()")
@@ -64,9 +71,17 @@ class MainActivity : AppCompatActivity() {
         })
 
         infoViewModel.getUserDetail().observe(this, Observer {
-            Toast.makeText(this, "User Detail:\nName: ${it.name}\nBio: ${it.bio}", Toast.LENGTH_LONG).show()
+            dialogUserDetailBinding.userDetail = it
+            dialog.show()
         })
 
+    }
+
+    private fun initDialog() {
+        dialogUserDetailBinding = DataBindingUtil
+            .inflate(LayoutInflater.from(this), R.layout.dialog_user_detail, null, false);
+        dialog = Dialog(this)
+        dialog.setContentView(dialogUserDetailBinding.getRoot());
     }
 
     private fun initRecyclerView() {
@@ -97,6 +112,10 @@ class MainActivity : AppCompatActivity() {
         userListAdapter.clear()
 
         hideKeyboard()
+    }
+
+    fun onDialogDismissBtn(view : View) {
+        dialog.dismiss()
     }
 
     fun AppCompatActivity.hideKeyboard() {
