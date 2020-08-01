@@ -9,6 +9,7 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +30,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var infoRepository: UserInfoRepository
 
     private lateinit var userListAdapter: UserListAdapter
+    private lateinit var scrollListener: RecyclerViewLoadMoreScroll
+
+    private lateinit var loading: MutableLiveData<Boolean>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,18 +44,23 @@ class MainActivity : AppCompatActivity() {
         infoFactory = UserInfoFactory(infoRepository)
         infoViewModel = ViewModelProvider(this, infoFactory).get(UserInfoViewModel::class.java)
 
+        loading = infoViewModel.getUILoading()
+        loading.observe(this, Observer {
+            activityMainBinding.loading = it
+        })
+
         initRecyclerView();
 
         infoViewModel.getUserInfos().observe(this, Observer {
             Log.i("MainActivity", "User Data updated with size = $it.size()")
-            activityMainBinding.loading = false
+            loading.value = false
             userListAdapter.notifyDataSetChanged()
         })
 
         infoViewModel.getRecentThrowable().observe(this, Observer {
-            Log.e("MainActivity", "Exception: ${it.toString()}")
-            activityMainBinding.loading = false
-            Toast.makeText(this, "Exception: ${it.toString()}", Toast.LENGTH_LONG).show()
+            Log.e("MainActivity", "Exception: $it")
+            loading.value = false
+            Toast.makeText(this, "Exception: $it", Toast.LENGTH_LONG).show()
         })
 
     }
@@ -62,10 +71,19 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding.searchResult.layoutManager = layoutManager
         userListAdapter = UserListAdapter(infoViewModel.getUserInfos().value!!)
         activityMainBinding.searchResult.adapter = userListAdapter
+
+        scrollListener = RecyclerViewLoadMoreScroll(layoutManager, loading)
+        scrollListener.setOnLoadMoreListener(object : OnLoadMoreListener {
+            override fun onLoadMore() {
+                loading.value = true
+                infoViewModel.loadMoreUserInfos(activityMainBinding.inputName.text.toString())
+            }
+        })
+        activityMainBinding.searchResult.addOnScrollListener(scrollListener)
     }
 
     fun onInitUserInfosBtn(view : View) {
-        activityMainBinding.loading = true;
+        loading.value = true
         infoViewModel.loadMoreUserInfos(activityMainBinding.inputName.text.toString())
         userListAdapter.clear()
 

@@ -15,9 +15,11 @@ class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
 
     val userInfos : MutableLiveData<MutableList<UserInfo>> = MutableLiveData()
     val recentThrowable: MutableLiveData<Throwable> = MutableLiveData()
+    val loading: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         userInfos.value = ArrayList()
+        loading.value = false
     }
 
     val taskFinished = object : OnTaskFinished {
@@ -37,6 +39,10 @@ class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
 
     fun getRecentThrowable() : LiveData<Throwable> {
         return recentThrowable
+    }
+
+    fun getUILoading() : MutableLiveData<Boolean> {
+        return loading
     }
 
     @SuppressLint("CheckResult")
