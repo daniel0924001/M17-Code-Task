@@ -27,20 +27,20 @@ class UserListAdapter(private val data : MutableList<UserInfo>) : RecyclerView.A
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val resId : Int = getItemViewType(position)
 
-        val dataPosition = dataPositionList.get(position)
+        val dataPosition = dataPositionList[position]
         if(resId == R.layout.item_user_big || resId == R.layout.item_user_small) {
-            (holder as ItemViewHolder).dataBinding.setVariable(BR.userInfo, this.data.get(dataPosition))
+            (holder as ItemViewHolder).dataBinding.setVariable(BR.userInfo, this.data[dataPosition])
             holder.itemView.setOnClickListener {
-                itemClick?.invoke(this.data.get(dataPosition).login)
+                itemClick?.invoke(this.data[dataPosition].login)
             }
         } else {
-            (holder as ItemViewHolder).dataBinding.setVariable(BR.userInfoLeft, this.data.get(dataPosition))
-            holder.dataBinding.setVariable(BR.userInfoRight, this.data.get(dataPosition + 1))
+            (holder as ItemViewHolder).dataBinding.setVariable(BR.userInfoLeft, this.data[dataPosition])
+            holder.dataBinding.setVariable(BR.userInfoRight, this.data[dataPosition + 1])
             holder.itemView.findViewById<View>(R.id.left_item).setOnClickListener {
-                itemClick?.invoke(this.data.get(dataPosition).login)
+                itemClick?.invoke(this.data[dataPosition].login)
             }
             holder.itemView.findViewById<View>(R.id.right_item).setOnClickListener {
-                itemClick?.invoke(this.data.get(dataPosition + 1).login)
+                itemClick?.invoke(this.data[dataPosition + 1].login)
             }
         }
     }
@@ -50,31 +50,28 @@ class UserListAdapter(private val data : MutableList<UserInfo>) : RecyclerView.A
     }
 
     override fun getItemViewType(position: Int): Int {
-        val dataPosition = dataPositionList.get(position)
-        return this.data.get(dataPosition).itemType
+        val dataPosition = dataPositionList[position]
+        return this.data[dataPosition].itemType
     }
 
     private fun decideItemType() {
-        val type : Int
 
-        if(counter != data.size - 1) {
-            type = (0..2).random()
+        when(if(counter != data.size - 1) {
+            (0..2).random()
         } else {
-            type = (0..1).random()
-        }
-
-        when(type) {
+            (0..1).random()
+        }) {
             0 -> {
                 dataPositionList.add(counter)
-                this.data.get(counter++).itemType = R.layout.item_user_big
+                this.data[counter++].itemType = R.layout.item_user_big
             }
             1 -> {
                 dataPositionList.add(counter)
-                this.data.get(counter++).itemType = R.layout.item_user_small
+                this.data[counter++].itemType = R.layout.item_user_small
             }
             else -> {
                 dataPositionList.add(counter)
-                this.data.get(counter).itemType = R.layout.item_user_double
+                this.data[counter].itemType = R.layout.item_user_double
                 counter += 2
             }
         }

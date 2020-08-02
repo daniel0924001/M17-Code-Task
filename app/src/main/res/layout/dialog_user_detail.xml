@@ -19,7 +19,7 @@
             android:layout_marginStart="@dimen/item_big_border"
             android:layout_marginEnd="@dimen/item_big_border"
             android:contentDescription="@string/avatar_description"
-            android:imageUrl="@{userDetail.avatar_url}"
+            android:imageUrl="@{userDetail.avatarUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

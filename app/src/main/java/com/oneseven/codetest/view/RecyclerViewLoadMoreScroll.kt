@@ -1,6 +1,5 @@
 package com.oneseven.codetest.view
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +25,7 @@ class RecyclerViewLoadMoreScroll(private val mLayoutManager: RecyclerView.Layout
         totalItemCount = mLayoutManager.itemCount
 
         if (mLayoutManager is LinearLayoutManager) {
-            lastVisibleItem = (mLayoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+            lastVisibleItem = (mLayoutManager).findLastVisibleItemPosition()
         }
 
         if (!isLoading.value!! && totalItemCount <= lastVisibleItem + visibleThreshold) {

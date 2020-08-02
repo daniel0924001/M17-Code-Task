@@ -10,12 +10,12 @@ import com.oneseven.codetest.model.UserInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class UserInfoViewModel(val infoRepository: UserInfoRepository) : ViewModel() {
+class UserInfoViewModel(private val infoRepository: UserInfoRepository) : ViewModel() {
 
-    val userInfos : MutableLiveData<MutableList<UserInfo>> = MutableLiveData()
-    val recentThrowable: MutableLiveData<Throwable> = MutableLiveData()
-    val loading: MutableLiveData<Boolean> = MutableLiveData()
-    val userDetail : MutableLiveData<UserDetail> = MutableLiveData()
+    private val userInfos : MutableLiveData<MutableList<UserInfo>> = MutableLiveData()
+    private val recentThrowable: MutableLiveData<Throwable> = MutableLiveData()
+    private val loading: MutableLiveData<Boolean> = MutableLiveData()
+    private val userDetail : MutableLiveData<UserDetail> = MutableLiveData()
 
     init {
         userInfos.value = ArrayList()

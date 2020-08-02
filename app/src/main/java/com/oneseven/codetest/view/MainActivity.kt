@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var loading: MutableLiveData<Boolean>
 
-    private lateinit var dialog : Dialog
+    private var dialog : Dialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,16 +72,16 @@ class MainActivity : AppCompatActivity() {
 
         infoViewModel.getUserDetail().observe(this, Observer {
             dialogUserDetailBinding.userDetail = it
-            dialog.show()
+            dialog?.show()
         })
 
     }
 
     private fun initDialog() {
         dialogUserDetailBinding = DataBindingUtil
-            .inflate(LayoutInflater.from(this), R.layout.dialog_user_detail, null, false);
+            .inflate(LayoutInflater.from(this), R.layout.dialog_user_detail, null, false)
         dialog = Dialog(this)
-        dialog.setContentView(dialogUserDetailBinding.getRoot());
+        dialog!!.setContentView(dialogUserDetailBinding.root)
     }
 
     private fun initRecyclerView() {
@@ -120,16 +120,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onDialogDismissBtn(view : View) {
-        dialog.dismiss()
+        dialog?.dismiss()
     }
 
-    fun AppCompatActivity.hideKeyboard() {
+    private fun AppCompatActivity.hideKeyboard() {
         val view = this.currentFocus
         if (view != null) {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+    }
+
+    override fun onDestroy() {
+        dialog?.dismiss()
+        super.onDestroy()
     }
 }
 
