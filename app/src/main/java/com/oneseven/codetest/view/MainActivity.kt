@@ -13,25 +13,21 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.oneseven.codetest.R
 import com.oneseven.codetest.databinding.ActivityMainBinding
 import com.oneseven.codetest.databinding.DialogUserDetailBinding
-import com.oneseven.codetest.viewmodel.UserInfoFactory
-import com.oneseven.codetest.viewmodel.UserInfoRepository
 import com.oneseven.codetest.viewmodel.UserInfoViewModel
 import com.oneseven.codetest.viewmodel.UserListAdapter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var activityMainBinding : ActivityMainBinding
     private lateinit var dialogUserDetailBinding : DialogUserDetailBinding
 
-    private lateinit var infoViewModel: UserInfoViewModel
-    private lateinit var infoFactory: UserInfoFactory
-    private lateinit var infoRepository: UserInfoRepository
+    private val infoViewModel: UserInfoViewModel by viewModel()
 
     private var userListAdapter: UserListAdapter? = null
     private lateinit var scrollListener: RecyclerViewLoadMoreScroll
@@ -45,10 +41,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         activityMainBinding = DataBindingUtil.setContentView(
             this, R.layout.activity_main) as ActivityMainBinding
-
-        infoRepository = UserInfoRepository()
-        infoFactory = UserInfoFactory(infoRepository)
-        infoViewModel = ViewModelProvider(this, infoFactory).get(UserInfoViewModel::class.java)
 
         loading = infoViewModel.getUILoading()
         loading.observe(this, Observer {
