@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var infoFactory: UserInfoFactory
     private lateinit var infoRepository: UserInfoRepository
 
-    private lateinit var userListAdapter: UserListAdapter
+    private var userListAdapter: UserListAdapter? = null
     private lateinit var scrollListener: RecyclerViewLoadMoreScroll
 
     private lateinit var loading: MutableLiveData<Boolean>
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         infoViewModel.getUserInfos().observe(this, Observer {
             Log.i("MainActivity", "User Data updated with size = $it.size()")
             loading.value = false
-            userListAdapter.updateList()
+            userListAdapter?.updateList()
         })
 
         infoViewModel.getRecentThrowable().observe(this, Observer {
@@ -88,13 +88,7 @@ class MainActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = RecyclerView.VERTICAL
         activityMainBinding.searchResult.layoutManager = layoutManager
-        userListAdapter = UserListAdapter(infoViewModel.getUserInfos().value!!).apply {
-            itemClick = { userName ->
-                Log.e("MainActivity", "open user name: $userName")
-                infoViewModel.loadUserDetail(userName)
-            }
-        }
-        activityMainBinding.searchResult.adapter = userListAdapter
+        bindAdapter()
 
         scrollListener = RecyclerViewLoadMoreScroll(layoutManager, loading)
         scrollListener.setOnLoadMoreListener(object : OnLoadMoreListener {
@@ -106,10 +100,21 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding.searchResult.addOnScrollListener(scrollListener)
     }
 
+    private fun bindAdapter() {
+        userListAdapter?.clear()
+        userListAdapter = UserListAdapter(infoViewModel.getUserInfos().value!!).apply {
+            itemClick = { userName ->
+                Log.e("MainActivity", "open user name: $userName")
+                infoViewModel.loadUserDetail(userName)
+            }
+        }
+        activityMainBinding.searchResult.adapter = userListAdapter
+    }
+
     fun onInitUserInfosBtn(view : View) {
         loading.value = true
+        bindAdapter()
         infoViewModel.loadMoreUserInfos(activityMainBinding.inputName.text.toString())
-        userListAdapter.clear()
 
         hideKeyboard()
     }

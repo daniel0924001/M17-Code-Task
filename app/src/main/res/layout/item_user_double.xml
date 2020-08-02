@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="userInfoLeft" type="com.oneseven.codetest.model.UserInfo"/>
+        <variable name="userInfoRight" type="com.oneseven.codetest.model.UserInfo"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/left_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:background="@drawable/item_border"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/right_item">
+
+            <ImageView
+                android:id="@+id/left_avatar"
+                android:layout_width="@dimen/item_small_avatar_size"
+                android:layout_height="@dimen/item_small_avatar_size"
+                android:layout_marginTop="@dimen/item_small_border"
+                android:layout_marginBottom="@dimen/item_small_border"
+                android:layout_marginStart="@dimen/item_small_border"
+                android:contentDescription="@string/avatar_description"
+                android:imageUrl="@{userInfoLeft.avatar_url}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/left_name"/>
+
+            <TextView
+                android:id="@+id/left_name"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/item_small_border"
+                android:text="@{userInfoLeft.login}"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/left_avatar"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/right_item"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:background="@drawable/item_border"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/left_item">
+
+            <ImageView
+                android:id="@+id/right_avatar"
+                android:layout_width="@dimen/item_small_avatar_size"
+                android:layout_height="@dimen/item_small_avatar_size"
+                android:layout_marginTop="@dimen/item_small_border"
+                android:layout_marginBottom="@dimen/item_small_border"
+                android:layout_marginStart="@dimen/item_small_border"
+                android:contentDescription="@string/avatar_description"
+                android:imageUrl="@{userInfoRight.avatar_url}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/right_name"/>
+
+            <TextView
+                android:id="@+id/right_name"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/item_small_border"
+                android:text="@{userInfoRight.login}"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/right_avatar"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

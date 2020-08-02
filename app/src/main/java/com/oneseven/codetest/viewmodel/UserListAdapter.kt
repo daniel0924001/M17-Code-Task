@@ -1,6 +1,7 @@
 package com.oneseven.codetest.viewmodel
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,42 +12,86 @@ import com.oneseven.codetest.model.UserInfo
 class UserListAdapter(private val data : MutableList<UserInfo>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var previousSize: Int = 0
+    private var counter: Int = 0
+    private var itemCount: Int = 0
+    private var dataPositionList: MutableList<Int> = ArrayList()
+
 
     var itemClick: ((String?) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val viewHolder = when(viewType) {
-            0 -> ItemViewHolder(DataBindingUtil.inflate(
-                LayoutInflater.from(parent.context), R.layout.item_user_big, parent, false))
-            else -> ItemViewHolder(DataBindingUtil.inflate(
-                LayoutInflater.from(parent.context), R.layout.item_user_small, parent, false))
-        }
-        return viewHolder
+        return ItemViewHolder(DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context), viewType, parent, false))
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as ItemViewHolder).dataBinding.setVariable(BR.userInfo, this.data.get(position))
-        holder.itemView.setOnClickListener {
-            itemClick?.invoke(this.data.get(position).login)
+        val resId : Int = getItemViewType(position)
+
+        val dataPosition = dataPositionList.get(position)
+        if(resId == R.layout.item_user_big || resId == R.layout.item_user_small) {
+            (holder as ItemViewHolder).dataBinding.setVariable(BR.userInfo, this.data.get(dataPosition))
+            holder.itemView.setOnClickListener {
+                itemClick?.invoke(this.data.get(dataPosition).login)
+            }
+        } else {
+            (holder as ItemViewHolder).dataBinding.setVariable(BR.userInfoLeft, this.data.get(dataPosition))
+            holder.dataBinding.setVariable(BR.userInfoRight, this.data.get(dataPosition + 1))
+            holder.itemView.findViewById<View>(R.id.left_item).setOnClickListener {
+                itemClick?.invoke(this.data.get(dataPosition).login)
+            }
+            holder.itemView.findViewById<View>(R.id.right_item).setOnClickListener {
+                itemClick?.invoke(this.data.get(dataPosition + 1).login)
+            }
         }
     }
 
     override fun getItemCount(): Int {
-        return this.data.size
+        return itemCount
     }
 
     override fun getItemViewType(position: Int): Int {
-        if(this.data.get(position).itemType == -1) {
-            this.data.get(position).itemType = (0..1).random()
+        val dataPosition = dataPositionList.get(position)
+        return this.data.get(dataPosition).itemType
+    }
+
+    private fun decideItemType() {
+        val type : Int
+
+        if(counter != data.size - 1) {
+            type = (0..2).random()
+        } else {
+            type = (0..1).random()
         }
-        return this.data.get(position).itemType
+
+        when(type) {
+            0 -> {
+                dataPositionList.add(counter)
+                this.data.get(counter++).itemType = R.layout.item_user_big
+            }
+            1 -> {
+                dataPositionList.add(counter)
+                this.data.get(counter++).itemType = R.layout.item_user_small
+            }
+            else -> {
+                dataPositionList.add(counter)
+                this.data.get(counter).itemType = R.layout.item_user_double
+                counter += 2
+            }
+        }
     }
 
     fun clear() {
         data.clear()
+        counter = 0
+        itemCount = 0
+        previousSize = 0
     }
 
     fun updateList() {
+        while(counter < data.size) {
+            decideItemType()
+            itemCount++
+        }
         val increase : Int = itemCount - previousSize
         notifyItemRangeInserted(previousSize, increase)
         previousSize = itemCount
